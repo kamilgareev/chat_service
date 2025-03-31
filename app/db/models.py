@@ -32,7 +32,7 @@ class User(Base):
 
 
 class ChatType(str, Enum):
-    PRIVATE = 'private'
+    PERSONAL = 'personal'
     GROUP = 'group'
 
 
@@ -41,7 +41,7 @@ class Chat(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50))
-    type: Mapped[ChatType] = mapped_column(EnumColumn(ChatType), default=ChatType.PRIVATE)
+    type: Mapped[ChatType] = mapped_column(EnumColumn(ChatType), default=ChatType.PERSONAL)
 
     group: Mapped[Optional['Group']] = relationship(
         back_populates='chat',
@@ -56,6 +56,12 @@ class Chat(Base):
 
 
 class Group(Base):
+    """
+    Вообще, есть вопрос по поводу целесообразности внедрения этой модели
+    и, соответственно, по поводу корректности проектировки модели Chat.
+    Но так как это указано в ТЗ, сделаем Group с one-to-one связью с Chat.
+    При создании группового чата будем создавать одноименную группу.
+    """
     __tablename__ = 'groups'
 
     id: Mapped[int] = mapped_column(primary_key=True)
