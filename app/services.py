@@ -65,5 +65,5 @@ class Service:
         chat_service: ChatService = Provide[Container.chat_service],
         message_service: MessageService = Provide[Container.message_service]
     ):
-        self.chat_service = chat_service
-        self.message_service = message_service
+        self.chats = chat_service
+        self.messages = message_service
