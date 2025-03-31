@@ -28,10 +28,11 @@ class ChatRepository:
     ) -> Chat:
         chat = Chat(
             name=chat_name,
-            type=ChatType.PERSONAL
+            type=ChatType.PERSONAL,
+            group_id=None
         )
         session.add(chat)
-        await session.flush()
+        await session.commit()
         return chat
 
     @staticmethod
@@ -43,7 +44,7 @@ class ChatRepository:
         chat = Chat(
             name=chat_name,
             type=ChatType.GROUP,
-            group_id=group_id,
+            group_id=group_id
         )
         session.add(chat)
         await session.commit()
