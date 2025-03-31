@@ -79,3 +79,28 @@ class MessageRepository:
             .where(Message.id == message_id)
             .values(is_read=True)
         )
+
+
+class GroupRepository:
+
+    @staticmethod
+    async def create_group(
+        session: AsyncSession,
+        group_name: str,
+        creator_id: int,
+        members_ids: list[int]
+    ) -> Group:
+        group = Group(
+            name=group_name,
+            creator_id=creator_id
+        )
+        session.add(group)
+        await session.flush()
+
+        await session.execute(
+            insert(group_members),
+            [{'group_id': group.id, 'user_id': member_id} for member_id in members_ids]
+        )
+
+        await session.commit()
+        return group
