@@ -4,8 +4,8 @@ from dependency_injector.wiring import inject, Provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.containers import Container
-from app.db.models import Message, Chat
-from app.repositories import ChatRepository, MessageRepository
+from app.db.models import Message, Chat, Group
+from app.repositories import ChatRepository, MessageRepository, GroupRepository
 
 
 class ChatService:
@@ -76,13 +76,36 @@ class MessageService:
         )
 
 
+class GroupService:
+
+    @inject
+    def __init__(
+        self,
+        group_repository: GroupRepository = Provide[Container.group_repository]
+    ):
+        self.repo = group_repository
+
+    async def create_group(
+        self,
+        session: AsyncSession,
+        group_name: str,
+        creator_id: int,
+        members_ids: list[int]
+    ) -> Group:
+        return await self.repo.create_group(
+            session, group_name, creator_id, members_ids
+        )
+
+
 class Service:
 
     @inject
     def __init__(
         self,
         chat_service: ChatService = Provide[Container.chat_service],
-        message_service: MessageService = Provide[Container.message_service]
+        message_service: MessageService = Provide[Container.message_service],
+        group_service: GroupService = Provide[Container.group_service]
     ):
         self.chats = chat_service
         self.messages = message_service
+        self.groups = group_service
