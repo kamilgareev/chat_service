@@ -4,7 +4,7 @@ from dependency_injector.wiring import inject, Provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.containers import Container
-from app.db.models import Message
+from app.db.models import Message, Chat
 from app.repositories import ChatRepository, MessageRepository
 
 
@@ -24,6 +24,25 @@ class ChatService:
     ) -> Sequence[Message]:
         return await self.repo.get_chat_history(
             session, chat_id
+        )
+
+    async def create_personal_chat(
+        self,
+        session: AsyncSession,
+        chat_name: str
+    ) -> Chat:
+        return await self.repo.create_personal_chat(
+            session, chat_name
+        )
+
+    async def create_group_chat(
+        self,
+        session: AsyncSession,
+        chat_name: str,
+        group_id: int
+    ) -> Chat:
+        return await self.repo.create_group_chat(
+            session, chat_name, group_id
         )
 
 
