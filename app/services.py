@@ -13,16 +13,16 @@ class ChatService:
     @inject
     def __init__(
         self,
-        chat_repo: ChatRepository = Provide[Container.chat_repository]
+        chat_repository: ChatRepository = Provide[Container.chat_repository]
     ):
-        self.chat_repo = chat_repo
+        self.repo = chat_repository
 
     async def get_chat_history(
         self,
         session: AsyncSession,
         chat_id: int
     ) -> Sequence[Message]:
-        return await self.chat_repo.get_chat_history(
+        return await self.repo.get_chat_history(
             session, chat_id
         )
 
@@ -32,9 +32,9 @@ class MessageService:
     @inject
     def __init__(
         self,
-        message_repo: MessageRepository = Provide[Container.message_repository]
+        message_repository: MessageRepository = Provide[Container.message_repository]
     ):
-        self.message_repo = message_repo
+        self.repo = message_repository
 
     async def send_message(
         self,
@@ -43,7 +43,7 @@ class MessageService:
         sender_id: int,
         text: str,
     ) -> Message:
-        return await self.message_repo.create_message(
+        return await self.repo.create_message(
             session, chat_id, sender_id, text
         )
 
@@ -52,7 +52,7 @@ class MessageService:
         session: AsyncSession,
         message_id: int
     ) -> None:
-        await self.message_repo.mark_message_as_read(
+        await self.repo.mark_message_as_read(
             session, message_id
         )
 
