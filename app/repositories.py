@@ -1,9 +1,9 @@
 from typing import Any, Coroutine, Sequence
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import Message, ChatType
+from app.db.models import Message, ChatType, Chat, User, Group, group_members
 
 
 class ChatRepository:
@@ -22,12 +22,42 @@ class ChatRepository:
         return result.scalars().all()
 
     @staticmethod
-    async def create_chat(
+    async def create_personal_chat(
         session: AsyncSession,
         chat_name: str,
-        chat_type: ChatType
-    ):
-        pass
+    ) -> Chat:
+        chat = Chat(name=chat_name, type=ChatType.PERSONAL)
+        session.add(chat)
+        await session.flush()
+        return chat
+
+    @staticmethod
+    async def create_group_chat(
+        session: AsyncSession,
+        chat_name: str,
+        creator_id: int,
+        members_ids: list[int] | None = None
+    ) -> Chat:
+        chat = Chat(name=chat_name, type=ChatType.GROUP)
+        session.add(chat)
+        await session.flush()
+
+        # причина описана в docstring в Group из db/models.py
+        group = Group(
+            name=chat_name,
+            chat_id=chat.id,
+            creator_id=creator_id
+        )
+        session.add(group)
+        await session.flush()
+
+        all_members_ids = (members_ids if members_ids else []) + [creator_id]
+        await session.execute(
+            insert(group_members),
+            [{'group_id': group.id, 'user_id': user_id} for user_id in all_members_ids]
+        )
+        await session.commit()
+        return chat
 
 
 class MessageRepository:
