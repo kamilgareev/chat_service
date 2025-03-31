@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 
 from config.settings import settings
 from repositories import ChatRepository, MessageRepository
-from services import ChatService
+from services import Service
 
 
 class Container(containers.DeclarativeContainer):
@@ -27,7 +27,8 @@ class Container(containers.DeclarativeContainer):
         MessageRepository
     )
 
-    chat_service = providers.Factory(
-        ChatService,
-        chat_repository=chat_repository
+    service = providers.Factory(
+        Service,
+        chat_repository=chat_repository,
+        message_repository=message_repository
     )
