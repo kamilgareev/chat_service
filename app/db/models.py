@@ -71,7 +71,7 @@ class Group(Base):
 class Message(Base):
     __tablename__ = 'messages'
     __table_args__ = (
-        Index('idx_messages_chat_id_timestamp', 'chat_id', 'timestamp')
+        Index('idx_messages_chat_id_timestamp', 'chat_id', 'timestamp'),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
