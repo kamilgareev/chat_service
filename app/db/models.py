@@ -43,11 +43,12 @@ class Chat(Base):
     name: Mapped[str] = mapped_column(String(50))
     type: Mapped[ChatType] = mapped_column(EnumColumn(ChatType), default=ChatType.PERSONAL)
 
-    group: Mapped[Optional['Group']] = relationship(
-        back_populates='chat',
-        uselist=False,
-        cascade='all, delete-orphan'
+    group_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey('groups.id', ondelete='CASCADE'),
+        nullable=True
     )
+
+    group: Mapped[Optional['Group']] = relationship(back_populates='chats')
     messages: Mapped[list['Message']] = relationship(
         back_populates='chat',
         cascade='all, delete-orphan',
@@ -57,10 +58,8 @@ class Chat(Base):
 
 class Group(Base):
     """
-    Вообще, есть вопрос по поводу целесообразности внедрения этой модели
-    и, соответственно, по поводу корректности проектировки модели Chat.
-    Но так как это указано в ТЗ, сделаем Group с one-to-one связью с Chat.
-    При создании группового чата будем создавать одноименную группу.
+    Реализация групп: группа может содержать много чатов (аналог telegram групп).
+    Сейчас чат в группе сразу же включает в себя всех участников группы (чтобы не противоречить ТЗ).
     """
     __tablename__ = 'groups'
 
@@ -71,18 +70,16 @@ class Group(Base):
         ForeignKey('users.id', ondelete='SET NULL'),
         nullable=True
     )
-    chat_id: Mapped[int] = mapped_column(
-        ForeignKey('chats.id', ondelete='CASCADE'),
-        unique=True,
-        nullable=False
-    )
 
     creator: Mapped[Optional[User]] = relationship(back_populates='created_groups')
     members: Mapped[list[User]] = relationship(
         secondary='group_members',
         back_populates='groups'
     )
-    chat: Mapped['Chat'] = relationship(back_populates='group')
+    chats: Mapped[list['Chat']] = relationship(
+        back_populates='group',
+        cascade='all, delete-orphan'
+    )
 
 
 class Message(Base):
