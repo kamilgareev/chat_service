@@ -26,7 +26,10 @@ class ChatRepository:
         session: AsyncSession,
         chat_name: str,
     ) -> Chat:
-        chat = Chat(name=chat_name, type=ChatType.PERSONAL)
+        chat = Chat(
+            name=chat_name,
+            type=ChatType.PERSONAL
+        )
         session.add(chat)
         await session.flush()
         return chat
@@ -35,27 +38,14 @@ class ChatRepository:
     async def create_group_chat(
         session: AsyncSession,
         chat_name: str,
-        creator_id: int,
-        members_ids: list[int] | None = None
+        group_id: int,
     ) -> Chat:
-        chat = Chat(name=chat_name, type=ChatType.GROUP)
-        session.add(chat)
-        await session.flush()
-
-        # причина описана в docstring в Group из db/models.py
-        group = Group(
+        chat = Chat(
             name=chat_name,
-            chat_id=chat.id,
-            creator_id=creator_id
+            type=ChatType.GROUP,
+            group_id=group_id,
         )
-        session.add(group)
-        await session.flush()
-
-        all_members_ids = (members_ids if members_ids else []) + [creator_id]
-        await session.execute(
-            insert(group_members),
-            [{'group_id': group.id, 'user_id': user_id} for user_id in all_members_ids]
-        )
+        session.add(chat)
         await session.commit()
         return chat
 
@@ -76,7 +66,6 @@ class MessageRepository:
         )
         session.add(message)
         await session.commit()
-        await session.refresh(message)
         return message
 
     @staticmethod
