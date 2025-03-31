@@ -43,6 +43,11 @@ class Chat(Base):
     name: Mapped[str] = mapped_column(String(50))
     type: Mapped[ChatType] = mapped_column(EnumColumn(ChatType), default=ChatType.PRIVATE)
 
+    group: Mapped[Optional['Group']] = relationship(
+        back_populates='chat',
+        uselist=False,
+        cascade='all, delete-orphan'
+    )
     messages: Mapped[list['Message']] = relationship(
         back_populates='chat',
         cascade='all, delete-orphan',
@@ -60,12 +65,18 @@ class Group(Base):
         ForeignKey('users.id', ondelete='SET NULL'),
         nullable=True
     )
+    chat_id: Mapped[int] = mapped_column(
+        ForeignKey('chats.id', ondelete='CASCADE'),
+        unique=True,
+        nullable=False
+    )
 
     creator: Mapped[Optional[User]] = relationship(back_populates='created_groups')
     members: Mapped[list[User]] = relationship(
         secondary='group_members',
         back_populates='groups'
     )
+    chat: Mapped['Chat'] = relationship(back_populates='group')
 
 
 class Message(Base):
