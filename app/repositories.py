@@ -3,7 +3,7 @@ from typing import Any, Coroutine, Sequence
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models import Message, ChatType
+from app.db.models import Message, ChatType
 
 
 class ChatRepository:

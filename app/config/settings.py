@@ -1,7 +1,7 @@
 from pydantic import Field
 
-from base import BaseConfig
-from env_config import DatabaseConfig
+from app.config.base import BaseConfig
+from app.config.env_config import DatabaseConfig
 
 
 class Settings(BaseConfig):
