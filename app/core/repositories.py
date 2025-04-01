@@ -3,8 +3,19 @@ from typing import Sequence
 from sqlalchemy import select, update, insert, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import Message, ChatType, Chat, Group, group_members
+from app.db.models import Message, ChatType, Chat, Group, group_members, User
 
+
+class UserRepository:
+
+    @staticmethod
+    async def user_exists(
+        session: AsyncSession,
+        user_id: int
+    ):
+        return await session.scalar(
+            select(exists().where(User.id == user_id))
+        )
 
 class ChatRepository:
 
