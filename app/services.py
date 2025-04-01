@@ -17,6 +17,15 @@ class ChatService:
     ):
         self.repo = chat_repository
 
+    async def chat_exists(
+        self,
+        session: AsyncSession,
+        chat_id: int
+    ) -> bool:
+        return await self.repo.chat_exists(
+            session, chat_id
+        )
+
     async def get_chat_history(
         self,
         session: AsyncSession,

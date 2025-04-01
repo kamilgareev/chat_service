@@ -1,12 +1,21 @@
-from typing import Any, Coroutine, Sequence
+from typing import Sequence
 
-from sqlalchemy import select, update, insert
+from sqlalchemy import select, update, insert, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import Message, ChatType, Chat, User, Group, group_members
 
 
 class ChatRepository:
+
+    @staticmethod
+    async def chat_exists(
+        session: AsyncSession,
+        chat_id: int
+    ) -> bool:
+        return await session.scalar(
+            select(exists().where(Chat.id == chat_id))
+        )
 
     @staticmethod
     async def get_chat_history(
