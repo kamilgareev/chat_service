@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 
 from app.config.settings import settings
 from app.core.repositories import ChatRepository, MessageRepository, GroupRepository, UserRepository
-from app.core.services import Service, ChatService, MessageService, GroupService, UserService
+from app.core.services import Service, ChatService, GroupService, UserService
 
 
 class Container(containers.DeclarativeContainer):

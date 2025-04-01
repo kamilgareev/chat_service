@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from core.exceptions.base import BaseServiceException, HttpStatusCode, EntityMessage
+from .base import BaseServiceException, HttpStatusCode, EntityMessage
 
 
 class NotFoundException(BaseServiceException):
