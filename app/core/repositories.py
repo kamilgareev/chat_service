@@ -3,7 +3,7 @@ from typing import Sequence
 from sqlalchemy import select, update, insert, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import Message, ChatType, Chat, User, Group, group_members
+from app.db.models import Message, ChatType, Chat, Group, group_members
 
 
 class ChatRepository:

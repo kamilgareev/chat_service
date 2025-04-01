@@ -2,8 +2,8 @@ from dependency_injector import containers, providers
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
 from app.config.settings import settings
-from app.repositories import ChatRepository, MessageRepository, GroupRepository
-from app.services import Service, ChatService, MessageService, GroupService
+from app.core.repositories import ChatRepository, MessageRepository, GroupRepository
+from app.core.services import Service, ChatService, MessageService, GroupService
 
 
 class Container(containers.DeclarativeContainer):

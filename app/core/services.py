@@ -3,9 +3,9 @@ from typing import Sequence
 from dependency_injector.wiring import inject, Provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.containers import Container
+from app.core.containers import Container
 from app.db.models import Message, Chat, Group
-from app.repositories import ChatRepository, MessageRepository, GroupRepository
+from app.core.repositories import ChatRepository, MessageRepository, GroupRepository
 
 
 class ChatService:
@@ -17,20 +17,15 @@ class ChatService:
     ):
         self.repo = chat_repository
 
-    async def chat_exists(
-        self,
-        session: AsyncSession,
-        chat_id: int
-    ) -> bool:
-        return await self.repo.chat_exists(
-            session, chat_id
-        )
-
     async def get_chat_history(
         self,
         session: AsyncSession,
         chat_id: int
     ) -> Sequence[Message]:
+        if not self.repo.chat_exists(
+            session, chat_id
+        ):
+            raise ChatNotFoundException()
         return await self.repo.get_chat_history(
             session, chat_id
         )
