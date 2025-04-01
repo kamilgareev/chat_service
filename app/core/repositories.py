@@ -12,7 +12,7 @@ class UserRepository:
     async def user_exists(
         session: AsyncSession,
         user_id: int
-    ):
+    ) -> bool:
         return await session.scalar(
             select(exists().where(User.id == user_id))
         )
@@ -72,6 +72,15 @@ class ChatRepository:
 
 
 class MessageRepository:
+
+    @staticmethod
+    async def message_exists(
+        session: AsyncSession,
+        message_id: int
+    ) -> bool:
+        return await session.scalar(
+            select(exists().where(Message.id == message_id))
+        )
 
     @staticmethod
     async def create_message(

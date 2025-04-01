@@ -4,6 +4,7 @@ from core.exceptions.base import BaseServiceException, HttpStatusCode, EntityMes
 
 
 class NotFoundException(BaseServiceException):
+    #TODO: сделать фабрику для подобных exception
     status_code = HttpStatusCode.NOT_FOUND
     entity_name: ClassVar[str] = EntityMessage()
 

@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.containers import Container
 from app.db.models import Message, Chat, Group
 from app.core.repositories import ChatRepository, MessageRepository, GroupRepository
+from core.exceptions import ChatNotFoundException, MessageNotFoundException
 
 
 class ChatService:
@@ -55,9 +56,11 @@ class MessageService:
     @inject
     def __init__(
         self,
-        message_repository: MessageRepository = Provide[Container.message_repository]
+        message_repository: MessageRepository = Provide[Container.message_repository],
+        chat_repository: ChatRepository = Provide[Container.chat_repository]
     ):
         self.repo = message_repository
+        self.chat_repo = chat_repository
 
     async def send_message(
         self,
@@ -66,6 +69,9 @@ class MessageService:
         sender_id: int,
         text: str,
     ) -> Message:
+        if not self.chat_repo.repo.chat_exists(
+
+        )
         return await self.repo.create_message(
             session, chat_id, sender_id, text
         )
@@ -75,6 +81,10 @@ class MessageService:
         session: AsyncSession,
         message_id: int
     ) -> None:
+        if not self.repo.message_exists(
+            session, message_id
+        ):
+            raise MessageNotFoundException()
         await self.repo.mark_message_as_read(
             session, message_id
         )
