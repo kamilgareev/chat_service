@@ -1,21 +1,17 @@
 from typing import Sequence
-
-from dependency_injector.wiring import inject, Provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.containers import Container
 from app.db.models import Message, Chat, Group
 from app.core.repositories import ChatRepository, MessageRepository, GroupRepository, UserRepository
-from core.exceptions.not_found_exceptions import ChatNotFoundException, MessageNotFoundException
+from app.core.exceptions.not_found_exceptions import ChatNotFoundException, MessageNotFoundException
 
 
 class ChatService:
 
-    @inject
     def __init__(
         self,
-        chat_repository: ChatRepository = Provide[Container.chat_repository],
-        message_repository: MessageRepository = Provide[Container.message_repository]
+        chat_repository: ChatRepository,
+        message_repository: MessageRepository
     ):
         self.chat_repo = chat_repository
         self.msg_repo = message_repository
@@ -83,10 +79,9 @@ class ChatService:
 
 class GroupService:
 
-    @inject
     def __init__(
         self,
-        group_repository: GroupRepository = Provide[Container.group_repository]
+        group_repository: GroupRepository
     ):
         self.repo = group_repository
 
@@ -107,22 +102,20 @@ class UserService:
     Понадобится в будущем, для MVP оставим так.
     """
 
-    @inject
     def __init__(
         self,
-        user_repository: UserRepository = Provide[Container.user_repository]
+        user_repository: UserRepository
     ):
         self.repo = user_repository
 
 
 class Service:
 
-    @inject
     def __init__(
         self,
-        chat_service: ChatService = Provide[Container.chat_service],
-        group_service: GroupService = Provide[Container.group_service],
-        user_service: UserService = Provide[Container.user_service]
+        chat_service: ChatService,
+        group_service: GroupService,
+        user_service: UserService
     ):
         self.chats = chat_service
         self.groups = group_service
