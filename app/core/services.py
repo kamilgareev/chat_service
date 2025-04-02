@@ -48,7 +48,7 @@ class ChatService:
             session, chat_name, group_id
         )
 
-    async def send_message(
+    async def create_message(
         self,
         session: AsyncSession,
         chat_id: int,
