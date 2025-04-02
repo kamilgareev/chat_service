@@ -2,11 +2,16 @@ from dependency_injector import containers, providers
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
 from app.config.settings import settings
+from app.core.managers import WebsocketManager
 from app.core.repositories import ChatRepository, MessageRepository, GroupRepository, UserRepository
 from app.core.services import Service, ChatService, GroupService, UserService
 
 
 class Container(containers.DeclarativeContainer):
+    ws_manager = providers.Singleton(
+        WebsocketManager
+    )
+
     # DB
     db_engine = providers.Singleton(
         create_async_engine,

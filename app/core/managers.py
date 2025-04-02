@@ -4,7 +4,7 @@ from typing import Dict, Set
 from fastapi import WebSocket
 
 
-class ConnectionManager:
+class WebsocketManager:
     def __init__(self):
         self.active_connections: Dict[int, Set[WebSocket]] = defaultdict(set)
 
